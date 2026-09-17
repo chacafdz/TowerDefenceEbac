@@ -7,23 +7,37 @@ public class Boss : MonoBehaviour
     public int vida = 100;
     public Animator Anim;
 
+    private NavMeshAgent agent;
+
     void Start()
     {
-        GetComponent<NavMeshAgent>().SetDestination(objetivo.transform.position);
+        agent = GetComponent<NavMeshAgent>();
         Anim = GetComponent<Animator>();
+
+        if (objetivo == null)
+        {
+            objetivo = GameObject.Find("Objetivo");
+        }
+
+        if (objetivo == null)
+        {
+            Debug.LogError("Boss: no se encontró un GameObject llamado 'Objetivo' en la escena.", this);
+            return;
+        }
+
+        agent.SetDestination(objetivo.transform.position);
         Anim.SetBool("IsMoving", true);
-
     }
-
 
     // Update is called once per frame
     void Update()
     {
 
     }
+
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.tag == "Objetivo")
+        if (collision.gameObject.CompareTag("Objetivo"))
         {
             Anim.SetBool("IsMoving", false);
             Anim.SetTrigger("OnObjectiveReached");
@@ -32,9 +46,16 @@ public class Boss : MonoBehaviour
 
     public void Danar()
     {
-        objetivo?.GetComponent<Objetivo>().RecibirDano(40);
+        if (objetivo == null) return;
+
+        Objetivo objetivoScript = objetivo.GetComponent<Objetivo>();
+        if (objetivoScript != null)
+        {
+            objetivoScript.RecibirDano(40);
+        }
     }
-    public void RecibirDano(int  dano = 5)
+
+    public void RecibirDano(int dano = 5)
     {
         vida -= dano;
     }
