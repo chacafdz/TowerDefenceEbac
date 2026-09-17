@@ -1,6 +1,6 @@
 {
     "version": 1,
-    "name": "InputSystem_Actions",
+    "name": "ProtoInputActions",
     "maps": [
         {
             "name": "Player",
@@ -1006,6 +1006,56 @@
                     "processors": "",
                     "groups": "XR",
                     "action": "TrackedDeviceOrientation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Toques",
+            "id": "90cd4c7a-4806-4fe6-83f8-47de86c7e3ae",
+            "actions": [
+                {
+                    "name": "Toque",
+                    "type": "PassThrough",
+                    "id": "5e55b94c-efe9-4191-a703-b8043b69eabc",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                },
+                {
+                    "name": "PosicionToque",
+                    "type": "PassThrough",
+                    "id": "6fcca1bf-84c4-4540-9a60-cb0c889507bd",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "34930973-85d6-4302-9ac7-1c6ac8e0bf48",
+                    "path": "<Touchscreen>/Press",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": ";Touch",
+                    "action": "Toque",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "dfcfbd46-0b15-47b5-b24c-c5010616d022",
+                    "path": "<Touchscreen>/position",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": ";Touch",
+                    "action": "PosicionToque",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -6,15 +6,18 @@ using UnityEngine.AI;
 public class Objetivo : MonoBehaviour
 {
     public int vida = 100;
+    public delegate void ObjetivoDestruido();
+    public event ObjetivoDestruido EnObjetivoDestruido;
 
-    private void Start()
-    {
-        
-    }
     private void Update()
     {
         if (vida <= 0)
         {
+            if (EnObjetivoDestruido != null)
+            {
+                EnObjetivoDestruido();
+            }
+
             Destroy(this.gameObject);
         }
     }
