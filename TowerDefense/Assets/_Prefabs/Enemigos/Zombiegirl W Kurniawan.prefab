@@ -52,6 +52,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Zombiegirl W Kurniawan
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 8c27dd621e1630746a97a6aba03af084, type: 3}
+      propertyPath: m_TagString
+      value: Enemigo
+      objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: 8c27dd621e1630746a97a6aba03af084, type: 3}
       propertyPath: m_Controller
       value: 
@@ -95,7 +99,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objetivo: {fileID: 0}
-  vida: 70
+  vida: 50
+  _dano: 5
+  recursosGanados: 200
+  referenciaAdminJuego: {fileID: 0}
+  referenciaSpawner: {fileID: 0}
   Anim: {fileID: 0}
 --- !u!195 &358167063941634946
 NavMeshAgent:

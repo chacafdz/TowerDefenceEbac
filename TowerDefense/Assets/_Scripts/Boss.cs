@@ -1,62 +1,24 @@
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Video;
+using System.Collections;
+using System.Collections.Generic;
 
-public class Boss : MonoBehaviour
+public class Boss : EnemigoBase
 {
-    public GameObject objetivo;
-    public int vida = 100;
-    public Animator Anim;
-
-    private NavMeshAgent agent;
-
-    void Start()
+    private void Awake()
     {
-        agent = GetComponent<NavMeshAgent>();
-        Anim = GetComponent<Animator>();
-
-        if (objetivo == null)
-        {
-            objetivo = GameObject.Find("Objetivo");
-        }
-
-        if (objetivo == null)
-        {
-            Debug.LogError("Boss: no se encontró un GameObject llamado 'Objetivo' en la escena.", this);
-            return;
-        }
-
-        agent.SetDestination(objetivo.transform.position);
-        Anim.SetBool("IsMoving", true);
+        vida = 60;
+        _dano = 20;
     }
 
-    // Update is called once per frame
-    void Update()
+    protected override void OnDestroy()
     {
+        base.OnDestroy();
 
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Objetivo"))
+        if (referenciaAdminJuego != null)
         {
-            Anim.SetBool("IsMoving", false);
-            Anim.SetTrigger("OnObjectiveReached");
+            referenciaAdminJuego.enemigosJefeDerrotados++;
         }
-    }
-
-    public void Danar()
-    {
-        if (objetivo == null) return;
-
-        Objetivo objetivoScript = objetivo.GetComponent<Objetivo>();
-        if (objetivoScript != null)
-        {
-            objetivoScript.RecibirDano(40);
-        }
-    }
-
-    public void RecibirDano(int dano = 5)
-    {
-        vida -= dano;
     }
 }

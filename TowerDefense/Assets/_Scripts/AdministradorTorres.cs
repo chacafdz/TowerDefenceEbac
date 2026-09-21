@@ -8,22 +8,33 @@ using System.Diagnostics.Tracing;
 public class AdministradorTorres : MonoBehaviour
 {
     public AdministradorToques referenciaAdminToques;
+    public AdminJuego referenciaAdminJuego;
+    public SpawnerEnemigos referenciaSpawner;
+    public GameObject Objetivo;
     public enum TorreSeleccionada
     {
         Torre1, Torre2, Torre3, Torre4, Torre5
     }
     public TorreSeleccionada torreSeleccionada;
     public List<GameObject> prefabsTorres;
+    public List<GameObject> torresInstanciadas;
+    public delegate void EnemigoObjetivoActualizado();
+    public event EnemigoObjetivoActualizado EnEnemigoObjetivoActualizado;
 
     private void OnEnable()
     {
         referenciaAdminToques.EnPlataformaTocada += CrearTorre;
+        referenciaSpawner.EnOleadaIniciada += ActualizarObjetivo;
+        torresInstanciadas = new List<GameObject>();
+
 
     }
 
     private void OnDisable()
     {
         referenciaAdminToques.EnPlataformaTocada -= CrearTorre;
+        referenciaSpawner.EnOleadaIniciada -= ActualizarObjetivo;
+
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -36,16 +47,68 @@ public class AdministradorTorres : MonoBehaviour
     {
 
     }
+
+    private void ActualizarObjetivo()
+
+    {
+        if (referenciaSpawner.laOleadaHaIniciado)
+        {
+            float distanciaMasCorta = float.MaxValue;
+            GameObject enemigosMasCrecano = null;
+            foreach (GameObject enemigo in referenciaSpawner.EnemigosGenerados)
+            {
+                if (enemigo == null) continue;
+
+                float dist = Vector3.Distance(enemigo.transform.position, Objetivo.transform.position);
+                if (dist < distanciaMasCorta)
+                {
+                    distanciaMasCorta = dist;
+                    enemigosMasCrecano = enemigo;
+
+                }
+            }
+            if (enemigosMasCrecano != null)
+            {
+                foreach (GameObject torre in torresInstanciadas)
+                {
+                    if (torre == null) continue;
+
+                    torre.GetComponent<TorreBase>().enemigo = enemigosMasCrecano;
+                    torre.GetComponent<TorreBase>().Disparar();
+                }
+                if (EnEnemigoObjetivoActualizado != null)
+                {
+                    EnEnemigoObjetivoActualizado();
+                }
+
+            }
+        }
+        Invoke("ActualizarObjetivo", 3);
+    }
+
     private void CrearTorre(GameObject plataforma)
     {
-        if (plataforma.transform.childCount == 0)
+        int costo = torreSeleccionada switch
         {
+            TorreSeleccionada.Torre1 => 400,
+            TorreSeleccionada.Torre2 => 600,
+            TorreSeleccionada.Torre3 => 800,
+            TorreSeleccionada.Torre4 => 1000,
+            TorreSeleccionada.Torre5 => 1100,
+            _ => 0
+        };
+
+
+        if (plataforma.transform.childCount == 0 && referenciaAdminJuego.recursos >= costo)
+        {
+            referenciaAdminJuego.ModificarRecursos(-costo);
             Debug.Log("Creando Torre");
             int indiceTorre = (int)torreSeleccionada;
             Vector3 posParaInstanciar = plataforma.transform.position;
             posParaInstanciar.y += 0.5f;
             GameObject torreInstanciada = Instantiate<GameObject>(prefabsTorres[indiceTorre], posParaInstanciar, Quaternion.identity);
             torreInstanciada.transform.SetParent(plataforma.transform);
+            torresInstanciadas.Add(torreInstanciada);
         }
     }
     public void ConfigurarTorre(int torre)
