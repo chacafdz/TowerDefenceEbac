@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.AI;
 
-public class Objetivo : MonoBehaviour
+public class Objetivo : MonoBehaviour, IAtacable
 {
     public int vida = 100;
     public delegate void ObjetivoDestruido();
